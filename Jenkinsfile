@@ -5,9 +5,9 @@ pipeline {
       steps {
         sh '''cat deploy.sh            
 readlink -f deploy.sh
-sh \'scp -P24572 deploy.sh cashadmin@213.197.189.245:~/\'
-            sh \'ssh -P 24572 cashadmin@213.197.189.245 "chmod +x deploy.sh"\'
-            sh \'ssh -P 24572 cashadmin@213.197.189.245 ./deploy.sh\''''
+sh \'scp deploy.sh cashadmin@10.5.80.2:~/\'
+            sh \'ssh cashadmin@10.5.80.2 "chmod +x deploy.sh"\'
+            sh \'ssh cashadmin@10.5.80.2 ./deploy.sh\''''
       }
     }
 
