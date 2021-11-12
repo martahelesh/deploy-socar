@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+  mgw-apigateway:
+    image: "docker-registry.shs.ai/mgw/api-gateway:431-fc6746ca"
+    networks:
+     - mgw
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    deploy:
+      mode: replicated
+      replicas: 2
+      # To open nodered for internet uncomment section below
+      labels:
+        - "traefik.enable=true"
+      #   - "traefik.apiexternal=true"
+        - "traefik.http.routers.apigateway.entrypoints=https"
+        - "traefik.http.routers.apigateway.tls=true"
+        - "traefik.http.services.apigateway.loadbalancer.server.port=8080"
+        - "traefik.http.routers.apigateway.service=apigateway"
+        - "traefik.http.routers.apigateway.rule=Host(`mgw.socar.ua`)"
+      #   - "traefik.http.middlewares.apigateway-stripprefix.stripprefix.prefixes=/mgw"
+      #   - "traefik.http.middlewares.apigateway-stripprefix.stripprefix.forceSlash=false"
+      #   - "traefik.http.routers.apigateway-int.middlewares=apigateway-stripprefix"
+      #placement:
+      #  constraints:
+      #    - node.labels.role == mgw
+      restart_policy:
+        condition: any
+      resources:
+        #limits:
+        #  cpus: "1"
+        #  memory: 1000M
+        reservations:
+          cpus: "0.7"
+          memory: 1000M
+    environment:
+      FUEL_API_TOKEN:
+      FUEL_API_URL: http://10.2.80.65:9095/CS_test/v2/
+      JAVA_OPTS: -Xmx450m
+      JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8
+      MYSQL_HOST: jdbc:mysql://10.5.80.5:3306/gateway?characterEncoding=utf8
+      MYSQL_PASSWORD: x6gWrYKFBZe?g=86
+      MYSQL_USER: socar
+      PIN_SMSC_LOGIN: не используется
+      PIN_SMSC_PASSWORD: не используется
+      PIN_SMSC_SENDER: не используется
+      POS_KEY: pos
+      SPRING_PROFILES_ACTIVE: socar
+      # logs config
+      LOGSENE_ENABLED: "true"
+      LOGS_TOKEN: mgw
+
+networks:
+  mgw:
+    external: true
